@@ -2,29 +2,25 @@ echo "SNAPSHOT_VERSION: ${BUILD_NUMBER}"
 buildNumber = "${BUILD_NUMBER}"
 
 node("mesos-windows") {
-    stage('Create work dir'){
-        bat 'IF not exist C:\\Build (mkdir C:\\Build)'
+    stage('Checkout of git repo (cmd)') {
+        bat 'IF not exist TestWorkload (git clone https://sergiimatusEPAM@github.com/alekspv/TestWorkload.git) else (cd TestWorkload && git pull)';
     }
-    stage('Checkout of git repo (ssh)') {
-        bat 'git clone https://sergiimatusEPAM@github.com/alekspv/TestWorkload.git'
-    }
-// stage('Checkout of git repo (https)') {
+// stage('Checkout of git repo (Jenkins)') {
 //   steps {
 //    git credentialsId: 'userId', url: 'https://github.com/alekspv/TestWorkload.git', branch: 'master'
 //   }
 //  }
     stage('Clean') {
-        bat "cd TestWorkload"
-        bat 'dotnet clean'
+        bat "cd TestWorkload && dotnet clean"
     }
     stage('Build') {
-        bat 'dotnet build'
+        bat 'cd TestWorkload && dotnet build'
     }
     stage('Publish, pack into zip') {
-        bat 'dotnet publish -o C:\\Build\\TestWorkload_app'
-        bat '7z.exe a -tzip package.{buildNumber}.zip c:\\Build\\TestWorkload_app'
+        bat 'cd TestWorkload && dotnet publish -o .\\..\\..\\target'
+        bat '7z.exe a -tzip package.%BUILD_NUMBER%.zip target'
     }
     stage("Upload to Nexus"){
-        bat "curl -v -u admin:admin123 --upload-file package.zip  http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/TestWorkload-{buildNumber}.zip"
+        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/TestWorkload.%BUILD_NUMBER%.zip"
     }
 }
