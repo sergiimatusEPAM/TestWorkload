@@ -20,7 +20,10 @@ node("mesos-windows") {
         bat 'cd TestWorkload && dotnet publish -o .\\..\\..\\target'
         bat '7z.exe a -tzip package.%BUILD_NUMBER%.zip target'
     }
-    stage("Upload to Nexus"){
-        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/TestWorkload.%BUILD_NUMBER%.zip"
+    stage("Upload SNAPSHOT version to Nexus "){
+        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
+    }
+    stage("Upload RELEASE version to Nexus "){
+        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/RELEASE/TestWorkload-0.1.%BUILD_NUMBER%.zip"
     }
 }
