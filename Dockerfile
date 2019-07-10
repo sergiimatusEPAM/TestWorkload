@@ -1,48 +1,48 @@
 # escape=`
 
 # Installer image
-FROM mcr.microsoft.com/windows/servercore:1903 AS installer
+FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 AS installer
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Retrieve .NET Core Runtime
-ENV DOTNET_VERSION 2.2.6
+ENV ASPNETCORE_VERSION 2.1.12
 
-RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.net/dotnet/Runtime/$Env:DOTNET_VERSION/dotnet-runtime-$Env:DOTNET_VERSION-win-x64.zip; `
-    $dotnet_sha512 = 'b4ad5fdc9729e4be5bda5cfa7d7eaf9967c7792e099ff139e08b4617118e0ec7c62f0252a235f9b3e861e3014795c4bbd75e1edda0d284567f456d935cd02d14'; `
-    if ((Get-FileHash dotnet.zip -Algorithm sha512).Hash -ne $dotnet_sha512) { `
+RUN Invoke-WebRequest -OutFile aspnetcore.zip https://dotnetcli.blob.core.windows.net/dotnet/aspnetcore/Runtime/$Env:ASPNETCORE_VERSION/aspnetcore-runtime-$Env:ASPNETCORE_VERSION-win-x64.zip; `
+    $aspnetcore_sha512 = '168da5f714611e73faac29cda8cdf183af2cc9e4a703943a435c385c36f55bd9bb15a1ca75c9bea69eade8c9031f828b3d767a4df0a11ac7e269aaa6ed30ca2b'; `
+    if ((Get-FileHash aspnetcore.zip -Algorithm sha512).Hash -ne $aspnetcore_sha512) { `
         Write-Host 'CHECKSUM VERIFICATION FAILED!'; `
         exit 1; `
     }; `
     `
-    Expand-Archive dotnet.zip -DestinationPath dotnet; `
-    Remove-Item -Force dotnet.zip
+    Expand-Archive aspnetcore.zip -DestinationPath dotnet; `
+    Remove-Item -Force aspnetcore.zip
 
 
 # Runtime image
-FROM mcr.microsoft.com/windows/nanoserver:1903
+FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 
 COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
 
 # In order to set system PATH, ContainerAdministrator must be used
 USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\dotnet"
-USER ContainerUser
+#USER ContainerUser
 
 # Configure web servers to bind to port 80 when present
 ENV ASPNETCORE_URLS=http://+:80 `
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true
 
-
-FROM mcr.microsoft.com/windows/nanoserver:1903 as demoapp
+ 
+#FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 AS demoapp
 # Downloading artifact
-RUN Invoke-WebRequest -OutFile demoapp.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/artifact-1.0.0.zip; `
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+RUN Invoke-WebRequest -OutFile demoapp.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/TestWorkload.1.zip; `
     Expand-Archive demoapp.zip -DestinationPath demoapp; `
     Remove-Item -Force demoapp.zip
 
-FROM mcr.microsoft.com/windows/nanoserver:1903 
-COPY --from=demoapp demoapp ./
-WORKDIR /demoapp
+#FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 
+#COPY --from=demoapp /demoapp ./
+WORKDIR demoapp/target
 ENTRYPOINT ["dotnet", "DemoApp.dll"]
-
+#CMD cmd
