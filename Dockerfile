@@ -43,6 +43,6 @@ RUN Invoke-WebRequest -OutFile demoapp.zip http://ec2-54-226-133-173.compute-1.a
 
 #FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 
 #COPY --from=demoapp /demoapp ./
-WORKDIR demoapp/target
+WORKDIR /demoapp/target
 ENTRYPOINT ["dotnet", "DemoApp.dll"]
 #CMD cmd
