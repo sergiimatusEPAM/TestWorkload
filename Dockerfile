@@ -37,7 +37,7 @@ ENV ASPNETCORE_URLS=http://+:80 `
 #FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 AS demoapp
 # Downloading artifact
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-RUN Invoke-WebRequest -OutFile demoapp.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/TestWorkload.1.zip; `
+RUN Invoke-WebRequest -OutFile demoapp.zip http://ec2-54-226-133-173.compute-1.amazonaws.com:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip; `
     Expand-Archive demoapp.zip -DestinationPath demoapp; `
     Remove-Item -Force demoapp.zip
 
