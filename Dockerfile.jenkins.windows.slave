@@ -7,7 +7,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/ins
 RUN choco feature disable -name showDownloadProgress
 
 # install Pre-requisite packages: git , 7zip, curl, dotnetcore, dotnetcore-sdk
-RUN choco install git -y ; choco install 7zip -y; choco install curl -y; choco install dotnetcore --version 2.2.2 -my ; choco install dotnetcore-sdk --version 2.2.0 -my
+RUN choco install git -y ; choco install 7zip -y; choco install curl -y; choco install dotnetcore --version 2.2.2 -my ; choco install dotnetcore-sdk --version 2.2.0 -my; choco install docker -y
 
 RUN refreshenv
 
