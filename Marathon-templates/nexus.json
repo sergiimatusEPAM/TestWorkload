@@ -1,0 +1,28 @@
+{
+  "service": {
+    "name": "nexus",
+    "cpus": 2,
+    "mem": 2048,
+    "resource-role": "*"
+  },
+  "constraints": [
+    [
+      "os",
+      "UNLIKE",
+      "windows"
+    ]
+  ],
+  "networking": {
+    "host-port": 27092
+  },
+  "storage": {
+    "persist": false,
+    "local-volume": {
+      "host-volume": "/opt/sonatype/nexus-data"
+    },
+    "external-volume": {
+      "enable": false,
+      "volume-name": "nexus-data"
+    }
+  }
+}
