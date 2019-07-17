@@ -5,13 +5,6 @@
     "mem": 2048,
     "resource-role": "*"
   },
-  "constraints": [
-    [
-      "os",
-      "UNLIKE",
-      "windows"
-    ]
-  ],
   "networking": {
     "host-port": 27092
   },

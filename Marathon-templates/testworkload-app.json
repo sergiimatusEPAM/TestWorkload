@@ -34,9 +34,16 @@
       "parameters": []
     }
   },
+  "labels": {
+		"HAPROXY_DEPLOYMENT_GROUP":"DOTNET",
+	    "HAPROXY_DEPLOYMENT_ALT_PORT":"10008",
+	    "HAPROXY_GROUP":"external",
+	    "HAPROXY_0_REDIRECT_TO_HTTPS":"false",
+		"HAPROXY_0_VHOST": "testworkload-app.com.ua"
+  },
   "cpus": 1,
   "disk": 0,
-  "instances": 0,
+  "instances": 1,
   "maxLaunchDelaySeconds": 300,
   "mem": 1024,
   "gpus": 0,
