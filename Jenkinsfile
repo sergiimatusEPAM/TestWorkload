@@ -18,7 +18,7 @@ node("mesos-windows") {
     }
     stage('Publish, pack into zip') {
         bat 'cd TestWorkload && dotnet publish -o .\\..\\..\\target'
-        bat '7z.exe a -tzip package.%BUILD_NUMBER%.zip target'
+        bat '7z.exe a -mmt2 -tzip package.%BUILD_NUMBER%.zip target'
     }
     stage("Upload Snapshot to Nexus "){
         bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
