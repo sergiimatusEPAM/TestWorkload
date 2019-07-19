@@ -16,24 +16,30 @@ node("mesos-windows") {
         bat '7z.exe a -mmt2 -tzip package.%BUILD_NUMBER%.zip target'
     }
     stage("Upload Snapshot to Nexus "){
-        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Nexus_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
+        }
     }
     stage("Upload Release to Nexus "){
-        bat "curl -v -u admin:admin123 --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/RELEASE/TestWorkload-0.1.%BUILD_NUMBER%.zip"
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Nexus_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/RELEASE/TestWorkload-0.1.%BUILD_NUMBER%.zip"
+        }
     }
 }
 node("build-docker"){
-    stage("Build and publish Docker image"){
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            bat """
-                echo | set /p="%PASSWORD%" | docker login -u %USERNAME% --password-stdin
-            """
-        }
+    stage("Build Docker image"){
         bat """
             docker build -t sergiimatusepam/testworkload-app https://raw.githubusercontent.com/alekspv/TestWorkload/master/Dockerfile --no-cache
             docker tag sergiimatusepam/testworkload-app:latest sergiimatusepam/testworkload-app:0.%BUILD_NUMBER%
-            docker push sergiimatusepam/testworkload-app:0.%BUILD_NUMBER%
-            docker push sergiimatusepam/testworkload-app:latest
         """
+    }
+    stage("Publish to DockerHub"){
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            bat """
+                echo | set /p="%PASSWORD%" | docker login -u %USERNAME% --password-stdin
+                docker push sergiimatusepam/testworkload-app:0.%BUILD_NUMBER%
+                docker push sergiimatusepam/testworkload-app:latest
+            """
+        }
     }
 }
