@@ -17,7 +17,7 @@ and finally publishes the image to DockerHub.
 
 ## Example Workflow:
 At DC/OS cluster setup following services:
-- Jenkins from Marathon-templates/jenkins.json
+- Jenkins from [Marathon-templates/jenkins.json](https://github.com/alekspv/TestWorkload/blob/master/Marathon-templates/jenkins.json)
 - Nexus from DC/OS catalog, just specify the static port `27092` as it has been used in the pipeline
 - Marathon-lb from DC/OS catalog
 
@@ -30,7 +30,7 @@ At DC/OS cluster setup following services:
 - create raw(hosted) repository called `dotnet-sample` and uncheck box "Validate format"
 
 ### at Jenkins: 
-- Place name of Docker Image is going to be used to build dotnet application at "Jenkins on Mesos" plugin.
+- Place name of Docker Image which is going to be used to build dotnet application at "Jenkins on Mesos" plugin. I.e. `sergiimatusepam/dotnet-builder`
 
   Go to Manage Jenkins -> Configure System -> follow "Advanced" after "Mesos Cloud" section -> follow "Advanced" after "Use Docker Containerizer" -> Use `sergiimatusepam/dotnet-builder:latest`
   Also you may use your own image, see `DockerFile.jenkins.windows.slave` file for pre-configuration, depending on your needs.
