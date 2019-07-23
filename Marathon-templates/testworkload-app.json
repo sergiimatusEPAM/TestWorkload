@@ -1,7 +1,4 @@
 {
-  "labels": {
-    "os": "windows"
-  },
   "id": "/testworkload-app",
   "acceptedResourceRoles": [
     "*"
