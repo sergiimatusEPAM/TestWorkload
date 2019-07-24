@@ -37,8 +37,11 @@ At DC/OS cluster setup following services:
 
 - Add a static node named `build-docker` as a Jenkins slave on Windows for building a docker images. Note, the step requires as there is currently limitation - Docker in Docker concept doesn't work on Windows yet.
   
-  For this follow [Step by step guide to set up master and agent machines on Windows](https://wiki.jenkins.io/display/JENKINS/Step+by+step+guide+to+set+up+master+and+agent+machines+on+Windows)
+  For this follow [Step by step guide to set up master and agent machines on Windows](https://wiki.jenkins.io/display/JENKINS/Step+by+step+guide+to+set+up+master+and+agent+machines+on+Windows)  
+  Please note that "Launch agent via Java Web Start" method was renamed to "Launch agent by connecting it to master"
 
 - Submit (Global Credentials -> 'Username and password')[https://jenkins.io/doc/book/using/using-credentials/#adding-new-global-credentials] for Nexus and DockerHub. Name them `Nexus_token` and `DockerHub_token` respectively
+
+- Install [Credentials Binding](https://plugins.jenkins.io/credentials-binding) plugin
 
 - Create a Scripted Pipeline Job with defined at `Jenkinsfile`. 
