@@ -16,7 +16,6 @@
     "portMappings": [
       {
         "containerPort": 80,
-        "hostPort": 22222,
         "protocol": "tcp",
         "servicePort": 80,
         "name": "http"
@@ -32,11 +31,11 @@
     }
   },
   "labels": {
-		"HAPROXY_DEPLOYMENT_GROUP":"DOTNET",
-	    "HAPROXY_DEPLOYMENT_ALT_PORT":"10008",
-	    "HAPROXY_GROUP":"external",
-	    "HAPROXY_0_REDIRECT_TO_HTTPS":"false",
-		"HAPROXY_0_VHOST": "testworkload-app.com.ua"
+    "HAPROXY_DEPLOYMENT_GROUP":"DOTNET",
+    "HAPROXY_DEPLOYMENT_ALT_PORT":"10008",
+    "HAPROXY_GROUP":"external",
+    "HAPROXY_0_REDIRECT_TO_HTTPS":"false",
+    "HAPROXY_0_VHOST": "testworkload-app.com.ua"
   },
   "cpus": 1,
   "disk": 0,
@@ -49,7 +48,6 @@
       "mode": "container/bridge"
     }
   ],
-  "requirePorts": false,
   "upgradeStrategy": {
     "maximumOverCapacity": 1,
     "minimumHealthCapacity": 1
