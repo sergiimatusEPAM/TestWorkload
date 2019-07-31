@@ -15,3 +15,5 @@ docker container run --rm `
   -v "c:\programdata\docker:C:\ProgramData\docker" `
   -v "c:\docker-tls\client\.docker:C:\Users\containeradministrator\.docker" `
   sergiimatusepam/dockertls-windows
+
+restart-service docker -force
