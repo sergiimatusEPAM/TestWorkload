@@ -33,12 +33,19 @@ At DC/OS cluster setup following services:
 - Place name of Docker Image which is going to be used to build dotnet application at "Jenkins on Mesos" plugin. I.e. `sergiimatusepam/dotnet-builder`
 
   Go to Manage Jenkins -> Configure System -> follow "Advanced" after "Mesos Cloud" section -> follow "Advanced" after "Use Docker Containerizer" -> Use `sergiimatusepam/dotnet-builder:latest`
-  Also you may use your own image, see `DockerFile.jenkins.windows.slave` file for pre-configuration, depending on your needs.
+  Also you may use your own image, see `dotnet-builder\DockerFile.jenkins.windows.slave` file for pre-configuration, depending on your needs.
 
-- Add a static node named `build-docker` as a Jenkins slave on Windows for building a docker images. Note, the step requires as there is currently limitation - Docker in Docker concept doesn't work on Windows yet.
-  
-  For this follow [Step by step guide to set up master and agent machines on Windows](https://wiki.jenkins.io/display/JENKINS/Step+by+step+guide+to+set+up+master+and+agent+machines+on+Windows)  
-  Please note that "Launch agent via Java Web Start" method was renamed to "Launch agent by connecting it to master"
+- For enabling docker-in-docker support, mark checkbox `Use custom docker command shell` and provide wrapper script relative path from root of disk `C:\` (for example if script is placed in `c:\wrapper.cmd` you need to specify `wrapper.cmd`). Volume with client SSL certs need to be added with following parameters:
+
+    `Container Path: C:\Users\containeradministrator\.docker`  
+    `Host Path: c:\docker-tls\client\.docker`
+
+  And the last step - add two container environment variables via adding two additional plugin parameters:
+
+    `Name: env`
+    `Value: DOCKER_HOST=tcp://gateway.docker.internal:2376`   
+   `Name: env`
+    `Value: DOCKER_TLS_VERIFY=1`
 
 - Submit (Global Credentials -> 'Username and password')[https://jenkins.io/doc/book/using/using-credentials/#adding-new-global-credentials] for Nexus and DockerHub. Name them `Nexus_token` and `DockerHub_token` respectively
 
