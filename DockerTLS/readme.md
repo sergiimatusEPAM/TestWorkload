@@ -1,37 +1,13 @@
----
-author: taylorb-microsoft
----
-
 # Protect the Docker daemon socket on Windows
-This is an initial set of PowerShell scripts that utalize OpenSSL to automate creating self signed keys and certificates for Docker on Windows.  These scripts follow the directions at https://docs.docker.com/engine/security/https/.
+Create TLS certs for Docker, inside a Docker container. This avoids installing OpenSSL directly on your machine. As a source - following repo was used https://github.com/StefanScherer/dockerfiles-windows/tree/master/dockertls. 
 
+## Usage
 
-## Example Workflow:
-On your client machine run:
-```powershell
-  . .\DockerCertificateTools.ps1
-  Install-OpenSSL
-  New-OpenSSLCertAuth
-  New-ClientKeyandCert
-```
+### Build
+Run `build.ps1` to build container. Then run `push.ps1` to push it to DockerHub.
 
-Then either run:
-```powershell 
-New-ServerKeyandCert -serverKeyFile "c:\myDockerKeys\server-key.pem" -serverCert "c:\myDockerKeys\server-cert.pem" -serverIPAddresses @($(([System.Net.DNS]::GetHostAddresses("$($env:COMPUTERNAME)")|Where-Object {$_.AddressFamily -eq "InterNetwork"}   |  select-object IPAddressToString)[0].IPAddressToString), "127.0.0.1")
-``` 
-Where you don't need to provide the container hosts name/IP Address, the script will detect automatically.
-Then copy the server-cert.pem/server-key.pem and ca.pem file to the c:\programdata\docker\certs.d directory and create a tag.txt file in c:\programdata\docker directory.
-```powershell
-mkdir c:\programdata\docker\certs.d
-Copy-Item C:\myDockerKeys\ca.pem C:\Users\Administrator\.docker\
-Copy-Item C:\myDockerKeys\*.pem C:\ProgramData\docker\certs.d\
+### Test
+Run `test.ps1` to generate certs/configs and store them into `test` folder. This action doesn't affect current docker engine configuration. It can be used for validating changes, that will be applied.
 
-Copy-Item daemon.json C:\ProgramData\docker\config\daemon.json
-```
-Restart docker service:
-```powershell
-Restart-Service -Name docker -Force
-
-```
-
-
+### Production setup
+Run `run.ps1` to generate certs/configs and store them into appropriate folders. After successfull script execution, docker engine should be restarted with `restart-service docker -force` command to apply new config.
