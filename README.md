@@ -1,6 +1,8 @@
 ---
-author: sergii_matus@epam.com
+author: Various...
 ---
+
+For complete guide use [Dominic's Field Guide](https://docs.google.com/document/d/10oA8ZwvNt0lqaACyZSwWk5gMW-TQDOobQz-AzN8B7OE)
 
 # Build .NET Core application using DC/OS and Jenkins 
 This is an initial set for show case of building .NET Core application on dynamically spinned up Jenkins Slave on Windows.
