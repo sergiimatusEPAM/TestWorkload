@@ -25,8 +25,6 @@ node("mesos-windows") {
             bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/RELEASE/TestWorkload-0.1.%BUILD_NUMBER%.zip"
         }
     }
-}
-node("build-docker"){
     stage("Build Docker image"){
         bat """
             docker build -t sergiimatusepam/testworkload-app https://raw.githubusercontent.com/alekspv/TestWorkload/master/Dockerfile --no-cache
@@ -42,8 +40,6 @@ node("build-docker"){
             """
         }
     }
-}
-node("mesos-windows") {
     stage("Publish service") {
         marathon(
             url: 'http://marathon.mesos:8080',

@@ -40,7 +40,7 @@
       }
     ],
     "docker": {
-      "image": "mesosphere/jenkins:0.x-windows",
+      "image": "sergiimatusepam/jenkins-0.x-windows:dind",
       "forcePullImage": false,
       "privileged": false,
       "parameters": []
