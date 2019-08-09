@@ -4,15 +4,15 @@ author: Various...
 
 For complete guide use [Dominic's Field Guide](https://docs.google.com/document/d/10oA8ZwvNt0lqaACyZSwWk5gMW-TQDOobQz-AzN8B7OE)
 
-# Build .NET Core application using DC/OS and Jenkins 
+# Build .NET Core application using DC/OS and Jenkins
 This is an initial set for show case of building .NET Core application on dynamically spinned up Jenkins Slave on Windows.
 
 
 Spins up dynamic Jenkins slave on Windows in Docker container,
 checkouts GitHub repository,
-runs “dotnet build”, 
-packs the TestWorkload application into zip, 
-upload to Nexus artifacts repository, 
+runs “dotnet build”,
+packs the TestWorkload application into zip,
+upload to Nexus artifacts repository,
 builds the application in a Docker image
 and finally publishes the image to DockerHub.
 
@@ -32,11 +32,11 @@ and finally publishes the image to DockerHub.
 - sign up
 - create `testworkload-app` repository. Grab full name, i.e. `sergiimatusepam/testworkload-app`
 
-### at Nexus: 
+### at Nexus:
 - login with default credentials
 - create raw(hosted) repository called `dotnet-sample` and uncheck box "Validate format"
 
-### at Jenkins: 
+### at Jenkins:
 - Submit (Global Credentials -> 'Username and password')[https://jenkins.io/doc/book/using/using-credentials/#adding-new-global-credentials] for Nexus and DockerHub. Name them `Nexus_token` and `DockerHub_token` respectively
 
 - Install [Credentials Binding](https://plugins.jenkins.io/credentials-binding) plugin
