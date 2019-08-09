@@ -1,6 +1,6 @@
 # escape=`
-FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+FROM mcr.microsoft.com/powershell:nanoserver-1809
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 ENV VERSION 2.5.5
 

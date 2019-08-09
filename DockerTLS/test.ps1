@@ -12,9 +12,10 @@ if (!(Test-Path .\test\server)) {
 }
 
 docker container run --rm `
+  --user ContainerAdministrator `
   -e SERVER_NAME=$ServerName `
   -e IP_ADDRESSES=$IPAddresses `
   -e ALTERNATIVE_NAMES=$AlternativeNames `
   -v "$(pwd)\test\server:C:\ProgramData\docker" `
   -v "$(pwd)\test\client\.docker:C:\Users\containeradministrator\.docker" `
-  sergiimatusepam/dockertls-windows
+  sergiimatusepam/dockertls-windows:latest
