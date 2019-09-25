@@ -1,5 +1,5 @@
 ---
-author: Various...
+authors: Microsoft, sergiimatus, m0ps
 ---
 
 For complete guide use [Dominic's Field Guide](https://docs.google.com/document/d/10oA8ZwvNt0lqaACyZSwWk5gMW-TQDOobQz-AzN8B7OE)
