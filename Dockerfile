@@ -22,12 +22,13 @@ COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
 USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\dotnet"
 # Configure web servers to bind to port 80 when present
-ENV ASPNETCORE_URLS=http://+:80`
+ENV ASPNETCORE_URLS=http://+:80 `
     # Enable detection of running in a container
-    DOTNET_RUNNING_IN_CONTAINER=true
+    DOTNET_RUNNING_IN_CONTAINER=true `
+    URL=%URL_to_APP_SNAPSHOT%
 # Downloading artifact
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-RUN Invoke-WebRequest -OutFile demoapp.zip $Env:URL_to_APP_SNAPSHOT; `
+RUN Invoke-WebRequest -OutFile demoapp.zip $Env:URL; `
     Expand-Archive demoapp.zip -DestinationPath demoapp; `
     Remove-Item -Force demoapp.zip
 WORKDIR /demoapp/target
