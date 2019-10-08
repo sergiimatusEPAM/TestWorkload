@@ -26,7 +26,7 @@ ENV ASPNETCORE_URLS=http://+:80 `
     DOTNET_RUNNING_IN_CONTAINER=true
 # Downloading artifact
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-RUN Invoke-WebRequest -OutFile demoapp.zip $($Env:URL_to_APP_SNAPSHOT); `
+RUN Invoke-WebRequest -OutFile demoapp.zip $($env:URL_to_APP_SNAPSHOT); `
     Expand-Archive demoapp.zip -DestinationPath demoapp; `
     Remove-Item -Force demoapp.zip
 WORKDIR /demoapp/target
