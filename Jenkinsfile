@@ -48,7 +48,7 @@ node("${dynamicJenkinsSlave}") {
 node("${staticJenkinsSlave}"){
     stage("Build Docker image"){
         bat """
-            docker build -t ${DockerAppImageName} ${DockerfilePath} --no-cache --build-arg URL_to_APP_SNAPSHOT="http://nexus.marathon.mesos:${NexusPort}/repository/${NexusRepoName}/0.1-SNAPSHOT/${appName}.zip"
+            docker build -t ${DockerAppImageName} ${DockerfilePath} --no-cache --build-arg URL_TO_APP_SNAPSHOT=http://nexus.marathon.mesos:${NexusPort}/repository/${NexusRepoName}/0.1-SNAPSHOT/${appName}.zip
             docker tag ${DockerAppImageName}:latest ${DockerAppImageName}:0.${buildNumber}
         """
     }

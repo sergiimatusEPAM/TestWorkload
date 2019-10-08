@@ -13,7 +13,7 @@ RUN Invoke-WebRequest -OutFile aspnetcore.zip https://dotnetcli.blob.core.window
     Expand-Archive aspnetcore.zip -DestinationPath dotnet; `
     Remove-Item -Force aspnetcore.zip
 
-ARG URL_to_APP_SNAPSHOT="http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
+ARG URL_TO_APP_SNAPSHOT=http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip
 # Runtime image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
@@ -26,7 +26,7 @@ ENV ASPNETCORE_URLS=http://+:80 `
     DOTNET_RUNNING_IN_CONTAINER=true
 # Downloading artifact
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-RUN Invoke-WebRequest -OutFile demoapp.zip $($env:URL_to_APP_SNAPSHOT); `
+RUN Invoke-WebRequest -OutFile demoapp.zip $env:URL_TO_APP_SNAPSHOT ; `
     Expand-Archive demoapp.zip -DestinationPath demoapp; `
     Remove-Item -Force demoapp.zip
 WORKDIR /demoapp/target
