@@ -18,7 +18,7 @@ and finally publishes the image to DockerHub.
 ## Example Workflow:
 At DC/OS cluster setup following services:
 - Jenkins from [Marathon-templates/jenkins.json](https://github.com/alekspv/TestWorkload/blob/master/Marathon-templates/jenkins.json)
-- Nexus from DC/OS catalog, just specify the static port `27092` as it has been used in the pipeline
+- Nexus from DC/OS catalog, just specify the static port `27092` as it has been used in the pipeline. Be aware the ports need to be opened on firewall side
 - Marathon-lb from DC/OS catalog
 
 ### at DockerHub:
@@ -30,6 +30,8 @@ At DC/OS cluster setup following services:
 - create raw(hosted) repository called `dotnet-sample` and uncheck box "Validate format"
 
 ### at Jenkins: 
+- Install [Credentials Binding](https://plugins.jenkins.io/credentials-binding) plugin
+
 - Place name of Docker Image which is going to be used to build dotnet application at "Jenkins on Mesos" plugin. I.e. `sergiimatusepam/dotnet-builder`
 
   Go to Manage Jenkins -> Configure System -> follow "Advanced" after "Mesos Cloud" section -> follow "Advanced" after "Use Docker Containerizer" -> Use `sergiimatusepam/dotnet-builder:latest`
@@ -39,9 +41,9 @@ At DC/OS cluster setup following services:
   
   For this follow [Step by step guide to set up master and agent machines on Windows](https://wiki.jenkins.io/display/JENKINS/Step+by+step+guide+to+set+up+master+and+agent+machines+on+Windows)  
   Please note that "Launch agent via Java Web Start" method was renamed to "Launch agent by connecting it to master"
+  Also you would need to install Java on Windows machine, as it requires for permanent Jenkins slave. For instance, `choco install jdk8 -y` 
 
 - Submit (Global Credentials -> 'Username and password')[https://jenkins.io/doc/book/using/using-credentials/#adding-new-global-credentials] for Nexus and DockerHub. Name them `Nexus_token` and `DockerHub_token` respectively
 
-- Install [Credentials Binding](https://plugins.jenkins.io/credentials-binding) plugin
-
 - Create a Scripted Pipeline Job with defined at `Jenkinsfile`. 
+

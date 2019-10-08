@@ -1,54 +1,73 @@
 echo "SNAPSHOT_VERSION: ${BUILD_NUMBER}"
-buildNumber = "${BUILD_NUMBER}"
+////////////////////////
+// put variables here:
+def appName = "TestWorkload"
+def appJSONPath = "${appName}/Marathon-templates/testworkload-app.json"
+def gitURL = "https://sergiimatusEPAM@github.com/alekspv/${appName}.git"
 
-node("mesos-windows") {
-    stage('Checkout of git repo (cmd)') {
-        bat 'IF not exist TestWorkload (git clone https://sergiimatusEPAM@github.com/alekspv/TestWorkload.git) else (cd TestWorkload && git pull)';
+def DockerRegToken = "DockerHub_token"
+def DockerfilePath = "https://raw.githubusercontent.com/alekspv/TestWorkload/master/Dockerfile"
+def DockerAppImageName = "sergiimatusepam/testworkload-app"
+
+def NexusRepoToken = "Nexus_token"
+def NexusPort = "27092"
+def NexusRepoName = "dotnet-sample"
+
+def dynamicJenkinsSlave = "mesos-windows"
+def staticJenkinsSlave = "build-docker"
+
+def buildNumber = "${BUILD_NUMBER}"
+//
+////////////////////////
+
+node("${dynamicJenkinsSlave}") {
+    stage("Checkout of git repo (cmd)") {
+        bat "IF not exist ${appName} (git clone ${gitURL}) else (cd ${appName} && git pull)";
     }
-    stage('Clean') {
-        bat "cd TestWorkload && dotnet clean"
+    stage("Clean") {
+        bat "cd ${appName} && dotnet clean"
     }
-    stage('Build') {
-        bat 'cd TestWorkload && dotnet build'
+    stage("Build") {
+        bat "cd ${appName} && dotnet build"
     }
-    stage('Publish, pack into zip') {
-        bat 'cd TestWorkload && dotnet publish -o .\\..\\..\\target'
-        bat '7z.exe a -mmt2 -tzip package.%BUILD_NUMBER%.zip target'
+    stage("Publish, pack into zip") {
+        bat "cd ${appName} && dotnet publish -o .\\..\\..\\target"
+        bat "7z.exe a -mmt2 -tzip package.${buildNumber}.zip target"
     }
-    stage("Upload Snapshot to Nexus "){
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Nexus_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
+    stage("Upload Snapshot to Nexus"){
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${NexusRepoToken}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.${buildNumber}.zip http://nexus.marathon.mesos:${NexusPort}/repository/${NexusRepoName}/0.1-SNAPSHOT/${appName}.zip"
         }
     }
     stage("Upload Release to Nexus "){
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Nexus_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.%BUILD_NUMBER%.zip http://nexus.marathon.mesos:27092/repository/dotnet-sample/RELEASE/TestWorkload-0.1.%BUILD_NUMBER%.zip"
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${NexusRepoToken}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            bat "curl -v -u %USERNAME%:%PASSWORD% --upload-file package.${buildNumber}.zip http://nexus.marathon.mesos:${NexusPort}/repository/${NexusRepoName}/RELEASE/${appName}-0.1.${buildNumber}.zip"
         }
     }
 }
-node("build-docker"){
+node("${staticJenkinsSlave}"){
     stage("Build Docker image"){
         bat """
-            docker build -t sergiimatusepam/testworkload-app https://raw.githubusercontent.com/alekspv/TestWorkload/master/Dockerfile --no-cache
-            docker tag sergiimatusepam/testworkload-app:latest sergiimatusepam/testworkload-app:0.%BUILD_NUMBER%
+            docker build -t ${DockerAppImageName} ${DockerfilePath} --no-cache --build-arg URL_to_APP_SNAPSHOT="http://nexus.marathon.mesos:${NexusPort}/repository/${NexusRepoName}/0.1-SNAPSHOT/${appName}.zip"
+            docker tag ${DockerAppImageName}:latest ${DockerAppImageName}:0.${buildNumber}
         """
     }
     stage("Publish to DockerHub"){
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'DockerHub_token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${DockerRegToken}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             bat """
                 echo | set /p="%PASSWORD%" | docker login -u %USERNAME% --password-stdin
-                docker push sergiimatusepam/testworkload-app:0.%BUILD_NUMBER%
-                docker push sergiimatusepam/testworkload-app:latest
+                docker push ${DockerAppImageName}:0.${buildNumber}
+                docker push ${DockerAppImageName}:latest
             """
         }
     }
 }
-node("mesos-windows") {
+node("${dynamicJenkinsSlave}") {
     stage("Publish service") {
         marathon(
-            url: 'http://marathon.mesos:8080',
+            url: "http://marathon.mesos:8080",
             forceUpdate: true,
-            docker: 'sergiimatusepam/testworkload-app:0.${BUILD_NUMBER}',
-            filename: 'TestWorkload/Marathon-templates/testworkload-app.json')
+            docker: "${DockerAppImageName}:0.${buildNumber}",
+            filename: "${appJSONPath}")
     }
 }
