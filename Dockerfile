@@ -25,7 +25,7 @@ RUN setx /M PATH "%PATH%;C:\Program Files\dotnet"
 ENV ASPNETCORE_URLS=http://+:80 `
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true `
-    URL=%URL_to_APP_SNAPSHOT%
+    URL=${URL_to_APP_SNAPSHOT}
 # Downloading artifact
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 RUN Invoke-WebRequest -OutFile demoapp.zip $Env:URL; `
