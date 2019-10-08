@@ -1,5 +1,4 @@
 # escape=`
-ARG URL_to_APP_SNAPSHOT="http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
 
 # Installer image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64 AS installer
@@ -14,7 +13,7 @@ RUN Invoke-WebRequest -OutFile aspnetcore.zip https://dotnetcli.blob.core.window
     Expand-Archive aspnetcore.zip -DestinationPath dotnet; `
     Remove-Item -Force aspnetcore.zip
 
-
+ARG URL_to_APP_SNAPSHOT="http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip"
 # Runtime image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
 COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
