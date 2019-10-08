@@ -11,7 +11,6 @@ RUN Invoke-WebRequest -OutFile aspnetcore.zip https://dotnetcli.blob.core.window
         Write-Host 'CHECKSUM VERIFICATION FAILED!'; `
         exit 1; `
     }; `
-    `
     Expand-Archive aspnetcore.zip -DestinationPath dotnet; `
     Remove-Item -Force aspnetcore.zip
 
@@ -23,7 +22,7 @@ COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
 USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\dotnet"
 # Configure web servers to bind to port 80 when present
-ENV ASPNETCORE_URLS=http://+:80 `
+ENV ASPNETCORE_URLS=http://+:80`
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true
 # Downloading artifact
