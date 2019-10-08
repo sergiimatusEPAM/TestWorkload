@@ -3,10 +3,10 @@ echo "SNAPSHOT_VERSION: ${BUILD_NUMBER}"
 // put variables here:
 def appName = "TestWorkload"
 def appJSONPath = "${appName}/Marathon-templates/testworkload-app.json"
-def gitURL = "https://sergiimatusEPAM@github.com/alekspv/${appName}.git"
+def gitURL = "https://sergiimatusEPAM@github.com/sergiimatusEPAM/${appName}.git"
 
 def DockerRegToken = "DockerHub_token"
-def DockerfilePath = "https://raw.githubusercontent.com/alekspv/TestWorkload/master/Dockerfile"
+def DockerfilePath = "https://raw.githubusercontent.com/sergiimatusEPAM/TestWorkload/feature/withoutTLS/Dockerfile"
 def DockerAppImageName = "sergiimatusepam/testworkload-app"
 
 def NexusRepoToken = "Nexus_token"

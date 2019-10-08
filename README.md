@@ -17,7 +17,7 @@ and finally publishes the image to DockerHub.
 
 ## Example Workflow:
 At DC/OS cluster setup following services:
-- Jenkins from [Marathon-templates/jenkins.json](https://github.com/alekspv/TestWorkload/blob/master/Marathon-templates/jenkins.json)
+- Jenkins from [Marathon-templates/jenkins.json](https://github.com/sergiimatusEPAM/TestWorkload/blob/master/Marathon-templates/jenkins.json)
 - Nexus from DC/OS catalog, just specify the static port `27092` as it has been used in the pipeline. Be aware the ports need to be opened on firewall side
 - Marathon-lb from DC/OS catalog
 
