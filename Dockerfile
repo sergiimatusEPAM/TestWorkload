@@ -15,6 +15,7 @@ RUN Invoke-WebRequest -OutFile aspnetcore.zip https://dotnetcli.blob.core.window
 
 # Runtime image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019-amd64
+# specifying default value for App.zip location (ideally will be overriden from Jenkinsfile)
 ARG URL_TO_APP_SNAPSHOT=http://nexus.marathon.mesos:27092/repository/dotnet-sample/0.1-SNAPSHOT/TestWorkload.zip
 COPY --from=installer ["/dotnet", "/Program Files/dotnet"]
 # In order to set system PATH, ContainerAdministrator must be used
